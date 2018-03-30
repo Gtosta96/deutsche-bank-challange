@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./devserver",
+    "lint": "./node_modules/.bin/eslint ./es6",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,8 +19,10 @@
     "babel-register": "^6.7.2",
     "css-loader": "^0.23.1",
     "debug": "^2.2.0",
-    "eslint": "^2.8.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
     "eslint-loader": "^1.3.0",
+    "eslint-plugin-import": "^2.9.0",
     "file-loader": "^0.8.5",
     "fs-extra": "^0.29.0",
     "lodash.merge": "^4.3.5",
@@ -27,9 +30,9 @@
     "stompjs": "^2.3.3",
     "style-loader": "^0.13.1",
     "stylelint": "^6.2.2",
-    "webpack": "^1.13.0",
     "typedarray-to-buffer": "^3.1.2",
-    "yaeti": "0.0.6",
-    "webpack-dev-server": "^1.14.1"
+    "webpack": "^1.13.0",
+    "webpack-dev-server": "^1.14.1",
+    "yaeti": "0.0.6"
   }
 }
