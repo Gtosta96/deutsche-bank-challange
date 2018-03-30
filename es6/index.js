@@ -1,8 +1,9 @@
 const { Stomp } = require('./lib');
-const { renderTable, handleData } = require('./src/controller');
+const Controller = require('./src/controller');
 
 const { DEBUG, WS } = require('./src/core/constants');
 
+const controller = new Controller();
 const client = Stomp.client(WS.URL);
 
 client.debug = (msg) => {
@@ -10,11 +11,11 @@ client.debug = (msg) => {
 };
 
 function onMessage(message) {
-  handleData(JSON.parse(message.body));
+  controller.handleData(JSON.parse(message.body));
 }
 
 function onConnectSuccess() {
-  renderTable();
+  controller.renderTable();
   client.subscribe(WS.DESTINATION, onMessage);
 }
 

@@ -2,10 +2,6 @@
  * Interface for Table's creation
 */
 class Table {
-  static getCellValue(row, index) {
-    return row.getElementsByTagName('td')[index].innerText;
-  }
-
   constructor() {
     this.table = document.createElement('table');
     const tBody = document.createElement('tbody');
@@ -13,6 +9,10 @@ class Table {
 
     this.table.appendChild(tHead);
     this.table.appendChild(tBody);
+  }
+
+  static getCellValue(row, index) {
+    return row.getElementsByTagName('td')[index].innerText;
   }
 
   appendHeader(value) {
