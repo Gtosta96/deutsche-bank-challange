@@ -1,24 +1,40 @@
-function createTable() {
-  const table = document.createElement('table');
-  const tHeader = document.createElement('theader');
-  const tBody = document.createElement('tbody');
+/*
+ * Interface for Table's creation
+*/
+class Table {
+  constructor() {
+    this.table = document.createElement('table');
+  }
 
-  table.appendChild(tHeader);
-  table.appendChild(tBody);
+  appendHeader(value) {
+    const header = document.createElement('th');
+    const textNode = document.createTextNode(value);
 
-  return table;
+    header.appendChild(textNode);
+    this.table.appendChild(header);
+
+    return this;
+  }
+
+  appendRow() {
+    const tr = document.createElement('tr');
+    this.table.appendChild(tr);
+
+    return tr;
+  }
+
+  appendCell(tr, value) { // eslint-disable-line class-methods-use-this
+    const textNode = document.createTextNode(value);
+
+    const td = tr.insertCell(tr.childElementCount);
+    td.appendChild(textNode);
+
+    return td;
+  }
+
+  render(element) {
+    element.appendChild(this.table);
+  }
 }
 
-function appendHeader(table) {
-  const header = document.createElement('th');
-
-  const tHeader = table.getElementsByTagName('theader')[0];
-  tHeader.appendChild(header);
-}
-
-function appendRow(table) {
-  const header = document.createElement('tr');
-
-  const tHeader = table.getElementsByTagName('tbody')[0];
-  tHeader.appendChild(header);
-}
+module.exports = Table;
