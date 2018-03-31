@@ -1,7 +1,7 @@
 const { Stomp } = require('./lib');
-const Controller = require('./src/controller');
+const Controller = require('./src/controller/controller');
 
-const { DEBUG, WS } = require('./src/core/constants');
+const { DEBUG, WS } = require('./src/constants');
 
 const controller = new Controller();
 const client = Stomp.client(WS.URL);

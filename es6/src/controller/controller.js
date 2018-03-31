@@ -1,8 +1,8 @@
-const Table = require('./core/html-elements/table');
-const Sparkline = require('./core/sparkline');
-const { createTimeStamp, diffSecondsFromNow } = require('./core/utils');
+const Table = require('../html-elements/table');
+const Sparkline = require('../sparkline/sparkline');
+const { createTimeStamp, diffSecondsFromNow } = require('../utils/utils');
 
-const { SPARKLINE } = require('./core/constants');
+const { SPARKLINE } = require('../constants');
 
 class Controller {
   constructor() {
@@ -47,13 +47,13 @@ class Controller {
   updateRow(row, data, timeStamp) {
     const midPriceArray = this.constructor.filterMidPrices(row.resources);
 
-    row.nameRow.innerText = data.name;
-    row.bestBidRow.innerText = data.bestBid;
-    row.bestAskRow.innerText = data.bestAsk;
-    // row.openBidRow.innerText = data.openBid;
-    // row.openAskRow.innerText = data.openAsk;
-    row.lastChangeAskRow.innerText = data.lastChangeAsk;
-    row.lastChangeBidRow.innerText = data.lastChangeBid;
+    row.nameRow.textContent = data.name;
+    row.bestBidRow.textContent = data.bestBid;
+    row.bestAskRow.textContent = data.bestAsk;
+    // row.openBidRow.textContent = data.openBid;
+    // row.openAskRow.textContent = data.openAsk;
+    row.lastChangeAskRow.textContent = data.lastChangeAsk;
+    row.lastChangeBidRow.textContent = data.lastChangeBid;
     row.sparklineRow.draw(midPriceArray);
 
     row.resources.push({ data, timeStamp });

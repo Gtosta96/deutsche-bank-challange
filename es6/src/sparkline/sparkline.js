@@ -5,7 +5,7 @@ const { Sparkline: SparklineImpl } = require('../../lib');
 */
 class Sparkline {
   constructor(element, v, opts) {
-    const defaultOptions = { lineColor: '#666666', startColor: '#ffa500', endColor: '#0000ff', maxColor: '#ff0000', minColor: '#008000' };
+    const defaultOptions = { lineColor: '#666666', startColor: '#ffa500', endColor: '#0000ff', maxColor: '#ff0000', minColor: '#008000', width: 130 };
 
     const values = v instanceof Array ? v : [v];
     const options = opts || defaultOptions;

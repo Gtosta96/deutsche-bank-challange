@@ -6,5 +6,8 @@
   "globals": {
     "document": true,
     "alert": true
+  },
+  "env": {
+    "jest": true
   }
 }

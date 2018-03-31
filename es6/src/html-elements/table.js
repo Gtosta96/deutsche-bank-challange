@@ -12,7 +12,7 @@ class Table {
   }
 
   static getCellValue(row, index) {
-    return row.getElementsByTagName('td')[index].innerText;
+    return row.getElementsByTagName('td').length ? row.getElementsByTagName('td')[index].textContent : '';
   }
 
   appendHeader(value) {
@@ -58,8 +58,8 @@ class Table {
     });
 
     sortedRows = type === 'ASC' ? sortedRows.reverse() : sortedRows;
-    sortedRows.forEach(tr =>
-      this.table.insertBefore(tr, this.table.getElementsByTagName('tbody')[0]));
+    sortedRows.forEach(row =>
+      this.table.insertBefore(row, this.table.getElementsByTagName('tbody')[0]));
   }
 
   render(element) {

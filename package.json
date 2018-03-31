@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./devserver",
     "lint": "./node_modules/.bin/eslint ./es6",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --watch ./es6/src"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +26,7 @@
     "file-loader": "^0.8.5",
     "fs-extra": "^0.29.0",
     "jest": "^22.4.3",
+    "jest-canvas-mock": "^1.0.2",
     "lodash.merge": "^4.3.5",
     "postcss-loader": "^0.8.2",
     "stompjs": "^2.3.3",
