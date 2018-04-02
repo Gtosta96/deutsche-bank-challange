@@ -64,16 +64,18 @@ class Controller {
 
   // Create table, headers and renders it.
   renderTable() {
-    this.table
-      .appendHeader('Currency Name')
-      .appendHeader('Current Best Bid Price')
-      .appendHeader('Current Best Ask Price')
-      // .appendHeader('Current Open Bid Price')
-      // .appendHeader('Current Open Ask Price')
-      .appendHeader('Amount Best Bid Last Changed')
-      .appendHeader('Amount Best Ask Last Changed')
-      .appendHeader('Sparkline')
-      .render(document.getElementById('table-container'));
+    this.table.appendHeader([
+      'Name',
+      'Current Best Bid Price',
+      'Current Best Ask Price',
+      // 'Current Open Bid Price',
+      // 'Current Open Ask Price',
+      'Amount Best Bid Last Changed',
+      'Amount Best Ask Last Changed',
+      'Sparkline',
+    ]);
+
+    this.table.render(document.getElementById('table-container'));
   }
 
   // Handles table's data

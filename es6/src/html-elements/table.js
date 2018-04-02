@@ -12,17 +12,19 @@ class Table {
   }
 
   static getCellValue(row, index) {
-    return row.getElementsByTagName('td').length ? row.getElementsByTagName('td')[index].textContent : '';
+    return row.getElementsByTagName('td').length ? row.getElementsByTagName('td')[index].textContent : undefined;
   }
 
   appendHeader(value) {
-    const th = document.createElement('th');
-    const textNode = document.createTextNode(value);
+    if (value instanceof Array) {
+      value.forEach(v => this.appendHeader(v));
+    } else {
+      const th = document.createElement('th');
+      const textNode = document.createTextNode(value);
 
-    th.appendChild(textNode);
-    this.table.getElementsByTagName('thead')[0].appendChild(th);
-
-    return this;
+      th.appendChild(textNode);
+      this.table.getElementsByTagName('thead')[0].appendChild(th);
+    }
   }
 
   appendRow() {
