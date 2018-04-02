@@ -25,38 +25,33 @@ class Controller {
   // Creates new Row
   createRow(data, timeStamp) {
     const tableRow = this.table.appendRow();
-    const midPrice = (data.bestBid + data.bestAsk) / 2;
+    const row = {};
+    row.resources = [{ data, timeStamp }];
 
-    const row = {
-      nameRow: this.table.appendCell(tableRow, data.name),
-      bestBidRow: this.table.appendCell(tableRow, data.bestBid),
-      bestAskRow: this.table.appendCell(tableRow, data.bestAsk),
-      // openBidRow: this.table.appendCell(tableRow, data.openBid),
-      // openAskRow: this.table.appendCell(tableRow, data.openAsk),
-      lastChangeAskRow: this.table.appendCell(tableRow, data.lastChangeAsk),
-      lastChangeBidRow: this.table.appendCell(tableRow, data.lastChangeBid),
-      sparklineRow: new Sparkline(this.table.appendCell(tableRow), midPrice),
+    const midPriceArray = this.constructor.filterMidPrices(row.resources, true);
 
-      resources: [{ data, timeStamp }],
-    };
+    row.nameRow = this.table.appendCell(tableRow, data.name);
+    row.bestBidRow = this.table.appendCell(tableRow, data.bestBid);
+    row.bestAskRow = this.table.appendCell(tableRow, data.bestAsk);
+    row.lastChangeAskRow = this.table.appendCell(tableRow, data.lastChangeAsk);
+    row.lastChangeBidRow = this.table.appendCell(tableRow, data.lastChangeBid);
+    row.sparklineRow = new Sparkline(this.table.appendCell(tableRow), midPriceArray);
 
     return row;
   }
 
   /* eslint-disable no-param-reassign */
   updateRow(row, data, timeStamp) {
+    row.resources.push({ data, timeStamp });
+
     const midPriceArray = this.constructor.filterMidPrices(row.resources);
 
     row.nameRow.textContent = data.name;
     row.bestBidRow.textContent = data.bestBid;
     row.bestAskRow.textContent = data.bestAsk;
-    // row.openBidRow.textContent = data.openBid;
-    // row.openAskRow.textContent = data.openAsk;
     row.lastChangeAskRow.textContent = data.lastChangeAsk;
     row.lastChangeBidRow.textContent = data.lastChangeBid;
     row.sparklineRow.draw(midPriceArray);
-
-    row.resources.push({ data, timeStamp });
 
     return row;
   }
@@ -64,16 +59,16 @@ class Controller {
 
   // Create table, headers and renders it.
   renderTable() {
-    this.table
-      .appendHeader('Currency Name')
-      .appendHeader('Current Best Bid Price')
-      .appendHeader('Current Best Ask Price')
-      // .appendHeader('Current Open Bid Price')
-      // .appendHeader('Current Open Ask Price')
-      .appendHeader('Amount Best Bid Last Changed')
-      .appendHeader('Amount Best Ask Last Changed')
-      .appendHeader('Sparkline')
-      .render(document.getElementById('table-container'));
+    this.table.appendHeader([
+      'Name',
+      'Current Best Bid Price',
+      'Current Best Ask Price',
+      'Amount Best Bid Last Changed',
+      'Amount Best Ask Last Changed',
+      'Sparkline',
+    ]);
+
+    this.table.render(document.getElementById('table-container'));
   }
 
   // Handles table's data
