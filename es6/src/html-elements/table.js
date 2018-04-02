@@ -3,9 +3,14 @@
 */
 class Table {
   constructor() {
+    this.store = {
+      headers: [],
+      rows: [],
+    };
+
     this.table = document.createElement('table');
-    const tBody = document.createElement('tbody');
     const tHead = document.createElement('thead');
+    const tBody = document.createElement('tbody');
 
     this.table.appendChild(tHead);
     this.table.appendChild(tBody);
@@ -15,32 +20,57 @@ class Table {
     return row.getElementsByTagName('td').length ? row.getElementsByTagName('td')[index].textContent : undefined;
   }
 
-  appendHeader(value) {
-    if (value instanceof Array) {
-      value.forEach(v => this.appendHeader(v));
+  get headerKeys() {
+    return this.store.headers.map(header => header.key);
+  }
+
+  appendHeader(header) {
+    if (header instanceof Array) {
+      header.forEach(h => this.appendHeader(h));
     } else {
+      this.store.headers.push(header);
+
       const th = document.createElement('th');
-      const textNode = document.createTextNode(value);
+      const textNode = document.createTextNode(header.value);
 
       th.appendChild(textNode);
       this.table.getElementsByTagName('thead')[0].appendChild(th);
     }
   }
 
-  appendRow() {
+  appendRow(id, values) {
     const tr = document.createElement('tr');
     this.table.getElementsByTagName('tbody')[0].appendChild(tr);
 
-    return tr;
+    this.store.rows.push({ id, tr, values });
+    Object.keys(values).forEach(key => this.appendCell(tr, key, values[key]));
   }
 
-  appendCell(tr, value) { // eslint-disable-line class-methods-use-this
+  updateRow(rowId, values) {
+    const rowObj = this.store.rows.find(row => row.id === rowId);
+    Object.keys(rowObj.values).forEach(key => this.updateCell(rowObj.tr, key, values[key]));
+
+    return rowId;
+  }
+
+  appendCell(tr, key, value) {
+    const { headerKeys } = this;
+    if (!headerKeys.includes(key)) return;
+
     const textNode = document.createTextNode(value);
 
-    const td = tr.insertCell(tr.childElementCount);
+    const td = tr.insertCell(headerKeys.indexOf(key));
     td.appendChild(textNode);
+  }
 
-    return td;
+  updateCell(tr, key, value) {
+    const { headerKeys } = this;
+    if (!headerKeys.includes(key)) return;
+
+    const textNode = document.createTextNode(value);
+
+    const td = tr.children[headerKeys.indexOf(key)];
+    td.replaceChild(textNode, td.childNodes[0]);
   }
 
   getRows() {

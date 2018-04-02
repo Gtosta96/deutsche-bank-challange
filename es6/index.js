@@ -11,7 +11,8 @@ client.debug = (msg) => {
 };
 
 function onMessage(message) {
-  controller.handleData(JSON.parse(message.body));
+  const data = JSON.parse(message.body);
+  controller.handleData(data.name, data); // defines id and value
 }
 
 function onConnectSuccess() {

@@ -1,20 +1,22 @@
 const Table = require('../html-elements/table');
-const Sparkline = require('../sparkline/sparkline');
+const Sparkline = require('../../lib/sparkline');
 const { createTimeStamp, diffSecondsFromNow } = require('../utils/utils');
 
 const { SPARKLINE } = require('../constants');
 
 class Controller {
   constructor() {
-    this.store = {};
+    this.store = {
+      rows: [],
+    };
     this.table = new Table();
   }
 
   // Filters the midPrice over the last ${SPARKLINE.TIME} seconds.
-  static filterMidPrices(resources) {
+  static filterMidPrices(resources, firstLoad) {
     return resources.reduce((arr, cur) => {
       const expired = diffSecondsFromNow(cur.timeStamp) > SPARKLINE.TIME;
-      if (!expired) {
+      if (firstLoad || !expired) {
         arr.push((cur.data.bestBid + cur.data.bestAsk) / 2);
       }
 
@@ -23,68 +25,48 @@ class Controller {
   }
 
   // Creates new Row
-  createRow(data, timeStamp) {
-    const tableRow = this.table.appendRow();
-    const midPrice = (data.bestBid + data.bestAsk) / 2;
+  createRow(id, data, timeStamp) {
+    const midPrice = this.constructor.filterMidPrices([{ data }], true);
+    const parsedData = Object.assign({}, data, { midPrice, timeStamp });
 
-    const row = {
-      nameRow: this.table.appendCell(tableRow, data.name),
-      bestBidRow: this.table.appendCell(tableRow, data.bestBid),
-      bestAskRow: this.table.appendCell(tableRow, data.bestAsk),
-      // openBidRow: this.table.appendCell(tableRow, data.openBid),
-      // openAskRow: this.table.appendCell(tableRow, data.openAsk),
-      lastChangeAskRow: this.table.appendCell(tableRow, data.lastChangeAsk),
-      lastChangeBidRow: this.table.appendCell(tableRow, data.lastChangeBid),
-      sparklineRow: new Sparkline(this.table.appendCell(tableRow), midPrice),
-
-      resources: [{ data, timeStamp }],
-    };
-
-    return row;
+    this.table.appendRow(id, parsedData);
+    this.store.rows.push({ id, resources: [{ data, timeStamp }] });
   }
 
   /* eslint-disable no-param-reassign */
-  updateRow(row, data, timeStamp) {
-    const midPriceArray = this.constructor.filterMidPrices(row.resources);
+  updateRow(currentRow, data, timeStamp) {
+    const midPrice = this.constructor.filterMidPrices(currentRow.resources);
+    const parsedData = Object.assign({}, data, { midPrice });
 
-    row.nameRow.textContent = data.name;
-    row.bestBidRow.textContent = data.bestBid;
-    row.bestAskRow.textContent = data.bestAsk;
-    // row.openBidRow.textContent = data.openBid;
-    // row.openAskRow.textContent = data.openAsk;
-    row.lastChangeAskRow.textContent = data.lastChangeAsk;
-    row.lastChangeBidRow.textContent = data.lastChangeBid;
-    row.sparklineRow.draw(midPriceArray);
-
-    row.resources.push({ data, timeStamp });
-
-    return row;
+    this.table.updateRow(currentRow.id, parsedData);
+    currentRow.resources.push({ data, timeStamp });
   }
   /* eslint-enable */
 
   // Create table, headers and renders it.
   renderTable() {
     this.table.appendHeader([
-      'Name',
-      'Current Best Bid Price',
-      'Current Best Ask Price',
-      // 'Current Open Bid Price',
-      // 'Current Open Ask Price',
-      'Amount Best Bid Last Changed',
-      'Amount Best Ask Last Changed',
-      'Sparkline',
+      { key: 'name', value: 'Name' },
+      { key: 'bestBid', value: 'Current Best Bid Price' },
+      { key: 'bestAsk', value: 'Current Best Ask Price' },
+      { key: 'lastChangeAsk', value: 'Amount Best Bid Last Changed' },
+      { key: 'lastChangeBid', value: 'Amount Best Ask Last Changed' },
+      { key: 'midPrice', value: 'Sparkline' },
     ]);
 
     this.table.render(document.getElementById('table-container'));
   }
 
   // Handles table's data
-  handleData(data) {
-    const row = this.store[data.name];
+  handleData(id, data) {
     const timeStamp = createTimeStamp();
+    const currentRow = this.store.rows.find(r => r.id === id);
 
-    const obj = !row ? this.createRow(data, timeStamp) : this.updateRow(row, data, timeStamp);
-    this.store[data.name] = obj;
+    if (!currentRow) {
+      this.createRow(id, data, timeStamp);
+    } else {
+      this.updateRow(currentRow, data, timeStamp);
+    }
 
     this.table.sortTable({ type: 'ASC', columnIndex: 3 });
   }
