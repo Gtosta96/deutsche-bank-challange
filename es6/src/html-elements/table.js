@@ -3,10 +3,7 @@
 */
 class Table {
   constructor() {
-    this.store = {
-      headers: [],
-      rows: [],
-    };
+    this.store = { headers: [], rows: [] };
 
     this.table = document.createElement('table');
     const tHead = document.createElement('thead');
@@ -38,48 +35,55 @@ class Table {
     }
   }
 
-  appendRow(id, values) {
+  appendRow(rowId, values) {
     const tr = document.createElement('tr');
     this.table.getElementsByTagName('tbody')[0].appendChild(tr);
 
-    this.store.rows.push({ id, tr, values });
-    Object.keys(values).forEach(key => this.appendCell(tr, key, values[key]));
+    this.store.rows.push({ id: rowId, tr, values });
+    Object.keys(values).forEach(key => this.appendCell(rowId, tr, key, values[key]));
   }
 
   updateRow(rowId, values) {
     const rowObj = this.store.rows.find(row => row.id === rowId);
-    Object.keys(rowObj.values).forEach(key => this.updateCell(rowObj.tr, key, values[key]));
-
-    return rowId;
+    Object.keys(rowObj.values).forEach(key => this.updateCell(rowId, rowObj.tr, key, values[key]));
   }
 
-  appendCell(tr, key, value) {
-    const { headerKeys } = this;
-    if (!headerKeys.includes(key)) return;
+  appendCell(rowId, tr, key, value) {
+    if (!this.headerKeys.includes(key)) return;
 
     const textNode = document.createTextNode(value);
+    const td = tr.insertCell(this.headerKeys.indexOf(key));
 
-    const td = tr.insertCell(headerKeys.indexOf(key));
-    td.appendChild(textNode);
+    const currentHeader = this.store.headers.find(h => h.key === key);
+    if (currentHeader.formatter) {
+      currentHeader.formatter(rowId, td, key, value);
+    } else {
+      td.appendChild(textNode);
+    }
   }
 
-  updateCell(tr, key, value) {
-    const { headerKeys } = this;
-    if (!headerKeys.includes(key)) return;
+  updateCell(rowId, tr, key, value) {
+    if (!this.headerKeys.includes(key)) return;
 
     const textNode = document.createTextNode(value);
+    const td = tr.children[this.headerKeys.indexOf(key)];
 
-    const td = tr.children[headerKeys.indexOf(key)];
-    td.replaceChild(textNode, td.childNodes[0]);
+    const currentHeader = this.store.headers.find(h => h.key === key);
+    if (currentHeader.formatter) {
+      currentHeader.formatter(rowId, td, key, value);
+    } else {
+      td.replaceChild(textNode, td.childNodes[0]);
+    }
   }
 
   getRows() {
     return this.table.getElementsByTagName('tr');
   }
 
-  sortTable({ type, columnIndex }) {
+  sortTable({ type }) {
     const rows = this.getRows();
 
+    const columnIndex = this.store.headers.findIndex(h => h.sort);
     let sortedRows = Array.from(rows).sort((rowA, rowB) => {
       const cellAValue = this.constructor.getCellValue(rowA, columnIndex);
       const cellBValue = this.constructor.getCellValue(rowB, columnIndex);

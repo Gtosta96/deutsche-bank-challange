@@ -6,10 +6,10 @@ const { SPARKLINE } = require('../constants');
 
 class Controller {
   constructor() {
-    this.store = {
-      rows: [],
-    };
+    this.store = { rows: [] };
     this.table = new Table();
+
+    this.sparklineFormatter = this.sparklineFormatter.bind(this);
   }
 
   // Filters the midPrice over the last ${SPARKLINE.TIME} seconds.
@@ -24,13 +24,23 @@ class Controller {
     }, []);
   }
 
+  // formats Sparkline row
+  sparklineFormatter(rowId, el, key, value) {
+    const currentRow = this.store.rows.find(row => row.id === rowId);
+    if (!currentRow.sparklineRef) {
+      currentRow.sparklineRef = new Sparkline(el);
+    }
+
+    currentRow.sparklineRef.draw(value);
+  }
+
   // Creates new Row
   createRow(id, data, timeStamp) {
     const midPrice = this.constructor.filterMidPrices([{ data }], true);
     const parsedData = Object.assign({}, data, { midPrice, timeStamp });
 
-    this.table.appendRow(id, parsedData);
     this.store.rows.push({ id, resources: [{ data, timeStamp }] });
+    this.table.appendRow(id, parsedData);
   }
 
   /* eslint-disable no-param-reassign */
@@ -49,9 +59,9 @@ class Controller {
       { key: 'name', value: 'Name' },
       { key: 'bestBid', value: 'Current Best Bid Price' },
       { key: 'bestAsk', value: 'Current Best Ask Price' },
-      { key: 'lastChangeAsk', value: 'Amount Best Bid Last Changed' },
-      { key: 'lastChangeBid', value: 'Amount Best Ask Last Changed' },
-      { key: 'midPrice', value: 'Sparkline' },
+      { key: 'lastChangeAsk', value: 'Best Ask Amount Last Changed' },
+      { key: 'lastChangeBid', value: 'Best Bid Amount Last Changed', sort: true },
+      { key: 'midPrice', value: 'Sparkline', formatter: this.sparklineFormatter },
     ]);
 
     this.table.render(document.getElementById('table-container'));
@@ -68,7 +78,7 @@ class Controller {
       this.updateRow(currentRow, data, timeStamp);
     }
 
-    this.table.sortTable({ type: 'ASC', columnIndex: 3 });
+    this.table.sortTable({ type: 'ASC' });
   }
 }
 
