@@ -14,51 +14,36 @@ describe('Table.test.js', () => {
   });
 
   it('should append header', () => {
-    table.appendHeader('test');
+    table.appendHeader({ key: 'test', value: 'Test Header' });
     const header = document.getElementsByTagName('th')[0];
 
-    expect(header.textContent).toBe('test');
+    expect(header.textContent).toBe('Test Header');
   });
 
   it('should append rows', () => {
-    table.appendRow();
-    table.appendRow();
+    table.appendHeader({ key: 'test', value: 'Test Header' });
+    table.appendRow('rowId', { test: 'Test Row' });
 
-    const rows = table.getRows();
-    expect(rows.length).toBe(2);
-  });
-
-  it('should append cell', () => {
-    const rowA = table.appendRow();
-    const rowB = table.appendRow();
-
-    table.appendCell(rowA, '10');
-    table.appendCell(rowB, '15');
-
-    expect(Table.getCellValue(rowA, 0)).toBe('10');
-    expect(Table.getCellValue(rowB, 0)).toBe('15');
+    const row = document.getElementsByTagName('tr')[0];
+    expect(row.childElementCount).toBe(1);
+    expect(row.textContent).toBe('Test Row');
   });
 
   it('should sort rows', () => {
-    const rowA = table.appendRow();
-    const rowB = table.appendRow();
+    table.appendHeader([
+      { key: 'test', value: 'Test Header 1', sort: true },
+    ]);
 
-    table.appendCell(rowA, '1');
-    table.appendCell(rowA, '2');
-    table.appendCell(rowA, '3');
-    table.appendCell(rowB, '20');
-    table.appendCell(rowB, '21');
-    table.appendCell(rowB, '22');
+    table.appendRow('rowId_1', { test: '10' });
+    table.appendRow('rowId_2', { test: '20' });
+    table.appendRow('rowId_3', { test: '30' });
 
-    expect(Table.getCellValue(rowA, 0)).toBe('1');
-    expect(Table.getCellValue(rowA, 1)).toBe('2');
-    expect(Table.getCellValue(rowA, 2)).toBe('3');
-    expect(Table.getCellValue(rowB, 0)).toBe('20');
-    expect(Table.getCellValue(rowB, 1)).toBe('21');
-    expect(Table.getCellValue(rowB, 2)).toBe('22');
+    table.sort({ type: 'ASC' });
 
-    table.sortTable({ type: 'ASC', columnIndex: 0 });
+    const row = document.getElementsByTagName('tr');
 
-    expect(Table.getCellValue(table.getRows()[0], 0)).toBe('20');
+    expect(row[0].getElementsByTagName('td')[0].textContent).toBe('30');
+    expect(row[1].getElementsByTagName('td')[0].textContent).toBe('20');
+    expect(row[2].getElementsByTagName('td')[0].textContent).toBe('10');
   });
 });

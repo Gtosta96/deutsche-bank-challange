@@ -16,7 +16,9 @@ function onMessage(message) {
 }
 
 function onConnectSuccess() {
-  controller.renderTable();
+  const element = document.getElementById('table-container');
+
+  controller.renderTable(element);
   client.subscribe(WS.DESTINATION, onMessage);
 }
 

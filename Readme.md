@@ -1,20 +1,26 @@
-DB Updating Table Dev Challenge
-===============================
+Alguns pensamentos
 
-This module contains a development challenge for DB recruitment.
+why exportar functions ao invés de arrow anonymous functions?
+Apesar de ser mais verboso, é mais fácil o debug
 
-The instructions are in the site/index.html file.
+Why classes?
+Apesar de ser mais verboso, é mais fácil interpretar uma classe, além do fato de incluir programadores não tão habituados à linguagem
 
-To view them, run
+A solução pode ser interpretada como over engineered, porém, a idéia é que a estrutura da tabela seja dinamica e facilmente alterada dores,
+Os cabecalhos são responsáveis por definir quais dados serão exibidos (através da propriedade `key`), assim como a formatação de cada coluna, e qual delas será aplicada o sort.
 
-```
-npm install
-npm start
-```
+nota importante: a `key` de cada linha a ser adicionada/atualizada deve bater com a `key` definida no header.
 
-from within this directory.  This will start a development server (using webpack)
-that supports hot reloading but also provides a stomp/ws endpoint providing fake
-fx updates.
+A solução foi pensada visando segurança (XSS), padronização, e o menor número de modificações diretas no DOM
 
-Once you've started the development server, navigate to http://localhost:8011
-to read the task description and get started.
+npm run test
+
+npm run test:coverage
+
+es6/index.js -- responsável pelo bootstrap da tabela e atualização de dados
+es6/constants.js -- ponto focal de variáveis estáticas
+es6/utils.js -- funções auxiliares
+es6/controller -- responsável por definir como os dados serão exibidos
+es6/html-elements/table -- responsável por montar e atualizar a tabela no DOM
+
+Agradeço a oportunidade. Gostaria de um feedback se possível.
