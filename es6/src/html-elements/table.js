@@ -61,7 +61,11 @@ class Table {
 
     const currentHeader = this.state.headers.find(h => h.key === key);
     if (currentHeader.formatter) {
-      currentHeader.formatter(rowId, td, value);
+      const formattedValue = currentHeader.formatter(rowId, td, value);
+      if (formattedValue) {
+        const textNode = document.createTextNode(formattedValue);
+        td.appendChild(textNode);
+      }
     } else {
       const textNode = document.createTextNode(value);
       td.appendChild(textNode);
@@ -74,7 +78,11 @@ class Table {
 
     const currentHeader = this.state.headers.find(h => h.key === key);
     if (currentHeader.formatter) {
-      currentHeader.formatter(rowId, td, value);
+      const formattedValue = currentHeader.formatter(rowId, td, value);
+      if (formattedValue) {
+        const textNode = document.createTextNode(formattedValue);
+        td.replaceChild(textNode, td.childNodes[0]);
+      }
     } else {
       const textNode = document.createTextNode(value);
       td.replaceChild(textNode, td.childNodes[0]);

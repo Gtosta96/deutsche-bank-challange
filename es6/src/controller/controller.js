@@ -24,7 +24,7 @@ class Controller {
     }, []);
   }
 
-  // formats Sparkline row
+  // formats Sparkline cell
   sparklineFormatter(rowId, el, value) {
     const currentRow = this.state.rows.find(row => row.id === rowId);
     if (!currentRow.sparklineRef) {
@@ -32,6 +32,11 @@ class Controller {
     }
 
     currentRow.sparklineRef.draw(value);
+  }
+
+  // formats Name cell
+  static nameFormatter(rowId, el, value) {
+    return `${value.substring(0, 3)}-${value.substring(3)}`;
   }
 
   // Creates new row
@@ -58,7 +63,7 @@ class Controller {
   // Create table, headers and renders it.
   renderTable(element) {
     this.table.appendHeader([
-      { key: 'name', value: 'Name' },
+      { key: 'name', value: 'Name', formatter: this.constructor.nameFormatter },
       { key: 'bestBid', value: 'Current Best Bid Price' },
       { key: 'bestAsk', value: 'Current Best Ask Price' },
       { key: 'lastChangeBid', value: 'Amount Best Bid Last Changed', sort: true },
