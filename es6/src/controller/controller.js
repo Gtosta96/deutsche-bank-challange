@@ -36,7 +36,7 @@ class Controller {
 
   // formats Name cell
   static nameFormatter(rowId, el, value) {
-    return `${value.substring(0, 3)}-${value.substring(3)}`;
+    return `${value.substring(0, 3)}-${value.substring(3)}`.toUpperCase();
   }
 
   // Creates new row
@@ -62,8 +62,12 @@ class Controller {
 
   // Create table, headers and renders it.
   renderTable(element) {
+    // Play around... change columns order, move the sort attribute, etc...
+    // Important: the key attribute must match the received key data from /fx/prices
     this.table.appendHeader([
       { key: 'name', value: 'Name', formatter: this.constructor.nameFormatter },
+      // { key: 'openBid', value: 'Open Bid' },
+      // { key: 'openAsk', value: 'Open Ask' },
       { key: 'bestBid', value: 'Current Best Bid Price' },
       { key: 'bestAsk', value: 'Current Best Ask Price' },
       { key: 'lastChangeBid', value: 'Amount Best Bid Last Changed', sort: true },

@@ -55,6 +55,11 @@ class Table {
       .forEach(key => this.updateCell(rowId, currentRow.tr, key, significantValues[key]));
   }
 
+  static appendChild(td, value) {
+    const textNode = document.createTextNode(value);
+    td.appendChild(textNode);
+  }
+
   appendCell(rowId, tr, key, value) {
     const index = this.headerKeys.indexOf(key);
     const td = tr.insertCell(index);
@@ -63,13 +68,16 @@ class Table {
     if (currentHeader.formatter) {
       const formattedValue = currentHeader.formatter(rowId, td, value);
       if (formattedValue) {
-        const textNode = document.createTextNode(formattedValue);
-        td.appendChild(textNode);
+        this.constructor.appendChild(td, formattedValue);
       }
     } else {
-      const textNode = document.createTextNode(value);
-      td.appendChild(textNode);
+      this.constructor.appendChild(td, value);
     }
+  }
+
+  static replaceChild(td, value) {
+    const textNode = document.createTextNode(value);
+    td.replaceChild(textNode, td.childNodes[0]);
   }
 
   updateCell(rowId, tr, key, value) {
@@ -80,12 +88,10 @@ class Table {
     if (currentHeader.formatter) {
       const formattedValue = currentHeader.formatter(rowId, td, value);
       if (formattedValue) {
-        const textNode = document.createTextNode(formattedValue);
-        td.replaceChild(textNode, td.childNodes[0]);
+        this.constructor.replaceChild(td, formattedValue);
       }
     } else {
-      const textNode = document.createTextNode(value);
-      td.replaceChild(textNode, td.childNodes[0]);
+      this.constructor.replaceChild(td, value);
     }
   }
 
