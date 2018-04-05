@@ -42,8 +42,8 @@ class Controller {
   // Creates new row
   createRow(id, data, timeStamp) {
     this.state.rows.push({ id, resources: [{ data, timeStamp }] });
-    const currentRow = this.state.rows.find(row => row.id === id);
 
+    const currentRow = this.state.rows.find(row => row.id === id);
     const midPrice = this.constructor.filterMidPrices(currentRow.resources, SPARKLINE.TIME);
     const parsedData = Object.assign({}, data, { midPrice });
 

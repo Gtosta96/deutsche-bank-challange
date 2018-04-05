@@ -29,6 +29,17 @@ describe('Table.test.js', () => {
     expect(row.textContent).toBe('Test Row');
   });
 
+  it('should append class to column', () => {
+    table.appendHeader({ key: 'test', value: 'Test Header', columnClass: 'test-class' });
+    table.appendRow('rowId', { test: 'Test Row' });
+
+    const header = document.getElementsByTagName('th')[0];
+    const row = document.getElementsByTagName('td')[0];
+
+    expect(header.classList[0]).toBe('test-class');
+    expect(row.classList[0]).toBe('test-class');
+  });
+
   it('should sort rows', () => {
     table.appendHeader([
       { key: 'test', value: 'Test Header 1', sort: true },
@@ -45,5 +56,16 @@ describe('Table.test.js', () => {
     expect(row[0].getElementsByTagName('td')[0].textContent).toBe('30');
     expect(row[1].getElementsByTagName('td')[0].textContent).toBe('20');
     expect(row[2].getElementsByTagName('td')[0].textContent).toBe('10');
+  });
+
+  it('should format column', () => {
+    const formatter = (rowId, el, value) => `${value} - formatted`;
+
+    table.appendHeader({ key: 'test', value: 'Test Header', formatter });
+    table.appendRow('rowId', { test: 'Test Row' });
+
+    const row = document.getElementsByTagName('td')[0];
+
+    expect(row.textContent).toBe('Test Row - formatted');
   });
 });

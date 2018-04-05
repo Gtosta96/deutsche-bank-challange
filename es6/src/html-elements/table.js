@@ -1,16 +1,20 @@
-/*
- * Interface for Table's creation
-*/
 class Table {
   constructor() {
     this.state = { headers: [], rows: [] };
 
     this.table = document.createElement('table');
-    const tHead = document.createElement('thead');
-    const tBody = document.createElement('tbody');
+    this.table.appendChild(document.createElement('thead'));
+    this.table.appendChild(document.createElement('tbody'));
+  }
 
-    this.table.appendChild(tHead);
-    this.table.appendChild(tBody);
+  static appendChild(element, value) {
+    const textNode = document.createTextNode(value);
+    element.appendChild(textNode);
+  }
+
+  static replaceChild(element, value) {
+    const textNode = document.createTextNode(value);
+    element.replaceChild(textNode, element.childNodes[0]);
   }
 
   get headerKeys() {
@@ -29,12 +33,11 @@ class Table {
       this.state.headers.push(header);
 
       const th = document.createElement('th');
-      const textNode = document.createTextNode(header.value);
       if (header.columnClass) {
         th.classList.add(header.columnClass);
       }
 
-      th.appendChild(textNode);
+      this.constructor.appendChild(th, header.value);
       this.table.getElementsByTagName('thead')[0].appendChild(th);
     }
   }
@@ -58,11 +61,6 @@ class Table {
       .forEach(key => this.updateCell(rowId, currentRow.tr, key, significantValues[key]));
   }
 
-  static appendChild(td, value) {
-    const textNode = document.createTextNode(value);
-    td.appendChild(textNode);
-  }
-
   appendCell(rowId, tr, key, value) {
     const index = this.headerKeys.indexOf(key);
     const td = tr.insertCell(index);
@@ -71,6 +69,7 @@ class Table {
     if (currentHeader.columnClass) {
       td.classList.add(currentHeader.columnClass);
     }
+
     if (currentHeader.formatter) {
       const formattedValue = currentHeader.formatter(rowId, td, value);
       if (formattedValue) {
@@ -79,11 +78,6 @@ class Table {
     } else {
       this.constructor.appendChild(td, value);
     }
-  }
-
-  static replaceChild(td, value) {
-    const textNode = document.createTextNode(value);
-    td.replaceChild(textNode, td.childNodes[0]);
   }
 
   updateCell(rowId, tr, key, value) {
