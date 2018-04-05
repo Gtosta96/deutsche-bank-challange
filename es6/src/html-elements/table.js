@@ -30,6 +30,9 @@ class Table {
 
       const th = document.createElement('th');
       const textNode = document.createTextNode(header.value);
+      if (header.columnClass) {
+        th.classList.add(header.columnClass);
+      }
 
       th.appendChild(textNode);
       this.table.getElementsByTagName('thead')[0].appendChild(th);
@@ -65,6 +68,9 @@ class Table {
     const td = tr.insertCell(index);
 
     const currentHeader = this.state.headers.find(h => h.key === key);
+    if (currentHeader.columnClass) {
+      td.classList.add(currentHeader.columnClass);
+    }
     if (currentHeader.formatter) {
       const formattedValue = currentHeader.formatter(rowId, td, value);
       if (formattedValue) {

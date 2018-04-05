@@ -1,6 +1,6 @@
 ### Proposal and a few statements
 
-This solution might be interpreted as over-enginered, however, the main idea is that the table could be dynamically rendered and easily updated and maintained.
+This solution might be interpreted as over-enginered, however, the main idea is that the table could be dynamically rendered and easily updated and maintained. Also, it must be easy to add new columns, the order which one will be displayed, css-classes and specific behaviors.
 
 The `key` property is responsible to render the table headers as much as the formatting of each column. It is also responsible to define which column is going to be sorted according to the proposed rule.
 

@@ -1,5 +1,5 @@
 const Table = require('../html-elements/table');
-const Sparkline = require('../../lib/sparkline');
+const { Sparkline } = require('../../lib');
 const { createTimeStamp, diffSecondsFromNow } = require('../utils/utils');
 
 const { SPARKLINE } = require('../constants');
@@ -62,10 +62,11 @@ class Controller {
 
   // Create table, headers and renders it.
   renderTable(element) {
-    // Play around... change columns order, move the sort attribute, etc...
-    // Important: the key attribute must match the received key data from /fx/prices
+    // Play around... change columns order, move the sort attribute...
+    // Important: to render a new column,
+    // the key attribute must match the received key from /fx/prices data
     this.table.appendHeader([
-      { key: 'name', value: 'Name', formatter: this.constructor.nameFormatter },
+      { key: 'name', value: 'Name', formatter: this.constructor.nameFormatter, columnClass: 'align-left' },
       // { key: 'openBid', value: 'Open Bid' },
       // { key: 'openAsk', value: 'Open Ask' },
       { key: 'bestBid', value: 'Current Best Bid Price' },
@@ -90,7 +91,7 @@ class Controller {
     }
 
     // Controls when table will be sorted (in this situation, every time a new data arrives)
-    this.table.sort({ type: 'ASC' });
+    this.table.sort({ type: 'ASC' }); // available options: ASC || DESC
   }
 }
 
