@@ -1,3 +1,5 @@
+const { sort } = require('../utils/utils');
+
 class Table {
   constructor() {
     this.state = { headers: [], rows: [] };
@@ -98,14 +100,8 @@ class Table {
   sort({ type }) {
     const column = this.state.headers.find(header => header.sort);
 
-    let sortedRows = this.state.rows.sort((rowA, rowB) => {
-      const cellAValue = rowA.values[column.key];
-      const cellBValue = rowB.values[column.key];
-
-      if (cellAValue > cellBValue) { return 1; }
-      if (cellAValue < cellBValue) { return -1; }
-      return 0;
-    });
+    const property = `values.${column.key}`;
+    let sortedRows = sort(this.state.rows, property);
 
     sortedRows = type === 'ASC' ? sortedRows.reverse() : sortedRows;
     sortedRows.forEach(row =>
