@@ -11,11 +11,14 @@ client.debug = (msg) => {
 };
 
 function onMessage(message) {
-  controller.handleData(JSON.parse(message.body));
+  const data = JSON.parse(message.body);
+  controller.handleData(data.name, data); // defines id and value
 }
 
 function onConnectSuccess() {
-  controller.renderTable();
+  const element = document.getElementById('table-container');
+
+  controller.renderTable(element);
   client.subscribe(WS.DESTINATION, onMessage);
 }
 

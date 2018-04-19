@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node ./devserver",
     "lint": "./node_modules/.bin/eslint ./es6",
-    "test": "jest --watch ./es6/src"
+    "test": "./node_modules/.bin/jest ./es6/src",
+    "test:coverage": "./node_modules/.bin/jest --coverage ./es6/src --coveragePathIgnorePatterns ./es6/lib"
   },
   "keywords": [],
   "author": "",
